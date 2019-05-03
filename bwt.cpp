@@ -2,6 +2,7 @@
 #include<string.h>
 #include<algorithm>
 #include<string>
+#include"LF_map.h"
 using namespace std;
 
 class bwt_item
@@ -43,7 +44,7 @@ bool bwt_item::operator==(bwt_item& item){
     else return false;
 }
 
-int bwt_transform(int *suffix_array, char *result, const string &ref_str){
+void bwt_transform(int *suffix_array, char *bwt, const string &ref_str){
     int str_len = ref_str.size();
     bwt_item bwt_matrix[str_len];
     
@@ -57,20 +58,53 @@ int bwt_transform(int *suffix_array, char *result, const string &ref_str){
         string str = bwt_matrix[i].get_str();
         int get = str_len-str.size()-1;
         if(get == -1) get = str_len -1;
-        result[i] = ref_str.at(get);
+        bwt[i] = ref_str.at(get);
         suffix_array[i] = bwt_matrix[i].get_idx();
     }
 
-    return 0;
+}
+
+void reverse_bwt(char *bwt, string *s, int str_len, LF_map* map){
+    int i = 0;
+    char front[10];
+    for(int i = 0; i<str_len;i++) front[i] = bwt[i];
+
+    sort(front, front+str_len);
+    cout << front << endl;
+    while(bwt[i] != '$'){
+        *s += bwt[i];
+        i = map->get_less(bwt[i]) + map->get_value(bwt[i],i);
+    }
+
+}
+
+void exact_match(char *bwt, const string s, LF_map* map){
+    char c = s.back();
+    int sp = map->get_less(c);
+    int ep = map->get_less(c)+1;
+    int i = s.size() - 2;
+
+    while(sp<ep and i>= 0){
+        c = s[i];
+        sp = map->get_less(c) + map->get_value(c,sp-1) + 1;
+        ep = map->get_less(c) + map->get_value(c,ep);
+        i--;
+    }
+    cout << sp << " " << ep << endl; 
 }
 
 int main(){
-    string a="banana$";
-    int b[7];
-    char c[7];
+    string s = "ACGTGTCAT$";
+    string s1 = "";
+    string s2 = "ACG";
+    char bwt[10];
+    int sa[10];
+    bwt_transform(sa,bwt,s);
 
-    bwt_transform(b,c,a);
-    for(int i =0;i<7;i++){
-        cout << b[i];
-    }
+    LF_map map(10, s);
+    map.init_table(bwt);
+    cout << bwt << endl;
+    reverse_bwt(bwt,&s1,10,&map);
+    exact_match(bwt,s2,&map);
+    cout << s << endl;
 }

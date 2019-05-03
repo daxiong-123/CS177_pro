@@ -17,5 +17,6 @@ public:
     LF_map(int str_len, string s);
     ~LF_map();
     int get_value(char mode, int index);
+    int get_less(char mode);
     void init_table(char *bwt);
 };

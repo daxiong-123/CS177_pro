@@ -1,6 +1,6 @@
 #include "LF_map.h"
 
-LF_map::LF_map(int str_len, string s):cap(str_len),less_A(0),less_C(0),less_G(0),less_T(0){
+LF_map::LF_map(int str_len, string s):cap(str_len){
     A = new int [str_len];
     T = new int [str_len];
     C = new int [str_len];
@@ -10,7 +10,11 @@ LF_map::LF_map(int str_len, string s):cap(str_len),less_A(0),less_C(0),less_G(0)
     memset(C,0,str_len);
     memset(G,0,str_len);
 
-    for(int i = 0; i<s.size();i++){
+    less_A = 0;
+    less_C = 0;
+    less_G = 0;
+    less_T = 0;
+    for(unsigned int i = 0; i<s.size();i++){
         if(s[i] == 'A'){
             less_C++;
             less_T++;
@@ -38,6 +42,7 @@ int LF_map::get_value(char mode, int index){
     else if(mode == 'T') return T[index];
     else if(mode == 'C') return C[index];
     else if(mode == 'G') return G[index];
+    else return 0;
 }
 
 void LF_map::init_table(char *bwt){
@@ -71,12 +76,19 @@ void LF_map::init_table(char *bwt){
             C[i] = C[i-1];
             G[i] = G[i-1] + 1;
         }
+        else{
+            A[i] = A[i-1];
+            T[i] = T[i-1];
+            C[i] = C[i-1];
+            G[i] = G[i-1];
+        }
     }
 }
 
 int LF_map::get_less(char mode){
-    if(mode == 'A') return less_A;
-    else if(mode == 'T') return less_T;
-    else if(mode == 'C') return less_C;
-    else if(mode == 'G') return less_G;
+    if(mode <= 'A') return less_A;
+    else if('A' < mode and mode <= 'C') return less_C;
+    else if('C' < mode and mode <= 'G') return less_G;
+    else if('G' < mode and mode <= 'T') return less_T;
+    else return 0;
 }
