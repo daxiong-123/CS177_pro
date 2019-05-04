@@ -90,5 +90,5 @@ int LF_map::get_less(char mode){
     else if('A' < mode and mode <= 'C') return less_C;
     else if('C' < mode and mode <= 'G') return less_G;
     else if('G' < mode and mode <= 'T') return less_T;
-    else return 0;
+    else return cap;
 }
