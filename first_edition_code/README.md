@@ -5,3 +5,5 @@
 This edition has implemented basic **bwt**, **Suffix array** function which can be used in finding *exact match*.
 
 Use `make` to compile the program and run `./bwa` to get exact match.
+
+Use `make clean` to delete all `*.o` file.
